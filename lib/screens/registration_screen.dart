@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class RegistrationScreen extends StatefulWidget {
   @override
@@ -8,25 +7,22 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  String _email = '';
+  String _password = '';
 
   Future<void> _register() async {
     final response = await http.post(
-      Uri.parse('https://your-vercel-domain.vercel.app/api/register'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+      Uri.parse('https://<your-vercel-deployment-url>/api/register'),
+      body: {
+        'email': _email,
+        'password': _password,
       },
-      body: jsonEncode(<String, String>{
-        'email': _emailController.text,
-        'password': _passwordController.text,
-      }),
     );
-
     if (response.statusCode == 200) {
-      // Handle successful registration
+      // Handle success
     } else {
-      // Handle registration error
+      // Handle error
     }
   }
 
@@ -36,23 +32,50 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       appBar: AppBar(title: Text('Register')),
       body: Padding(
         padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _register,
-              child: Text('Register'),
-            ),
-          ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Email'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your email';
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  setState(() {
+                    _email = value;
+                  });
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  setState(() {
+                    _password = value;
+                  });
+                },
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _register();
+                  }
+                },
+                child: Text('Register'),
+              ),
+            ],
+          ),
         ),
       ),
     );

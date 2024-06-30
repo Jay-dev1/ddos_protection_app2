@@ -1,6 +1,6 @@
+import 'package:ddos_protection_app/screens/login_screen.dart';
+import 'package:ddos_protection_app/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
-import 'screens/registration_screen.dart';
-import 'screens/login_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,20 +10,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'DDoS Protection App',
+      title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
-      routes: {
-        '/register': (context) => RegistrationScreen(),
-        '/login': (context) => LoginScreen(),
-      },
+      home: MyHomePage(),
     );
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,16 +27,22 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/register');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RegistrationScreen()),
+                );
               },
               child: Text('Register'),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/login');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
               },
               child: Text('Login'),
             ),
